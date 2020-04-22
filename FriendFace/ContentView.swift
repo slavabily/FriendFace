@@ -17,10 +17,14 @@ struct ContentView: View {
             VStack {
                 List {
                     ForEach(users) {user in
-                        VStack(alignment: .leading) {
-                            Text(user.name)
-                                .fontWeight(.bold)
-                            Text(user.company)
+                        NavigationLink(destination: Text("\(user.name) has \(user.friends.count) friends")
+                            .fontWeight(.bold)
+                            .navigationBarTitle("\(user.name)")) {
+                            VStack(alignment: .leading) {
+                                Text(user.name)
+                                    .fontWeight(.bold)
+                                Text(user.company)
+                            }
                         }
                      }
                 }
