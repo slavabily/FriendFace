@@ -10,35 +10,63 @@ import SwiftUI
 
 struct ContentView: View {
     
+    @Environment(\.managedObjectContext) var moc
+    @FetchRequest(entity: UserCD.entity(), sortDescriptors: []) var userCDs: FetchedResults<UserCD>
+    
     @State private var users = [User]()
         
     var body: some View {
         NavigationView {
             VStack {
                 List {
-                    ForEach(users) {user in
-                        NavigationLink(destination: UserDetailsView(user: user)) {
-                            VStack(alignment: .leading) {
-                                Text(user.name)
-                                    .fontWeight(.bold)
-                                Text(user.company)
-                            }
-                        }
-                     }
+                    ForEach(userCDs, id: \.self) {userCD in
+                        VStack(alignment: .leading) {
+                            Text(userCD.wrappedName)
+                            Text(userCD.wrappedCompany)
+                        }  
+                    }
+                    //                    ForEach(users) {user in
+                    //                        NavigationLink(destination: UserDetailsView(user: user)) {
+                    //                            VStack(alignment: .leading) {
+                    //                                Text(user.name)
+                    //                                    .fontWeight(.bold)
+                    //                                Text(user.company)
+                    //                            }
+                    //                        }
+                    //                     }
                 }
                 .onAppear {
                    self.fetchUsers()
+                 }
+                Button("Save") {
+                    self.saveToCD()
                 }
             }
         .navigationBarTitle("Users")
         }
     }
     
+    func saveToCD() {
+        for user in users {
+            let userCD = UserCD(context: moc)
+            userCD.name = user.name
+            userCD.company = user.company
+            
+            print("\(userCD.wrappedName), \(userCD.wrappedCompany)")
+        }
+        do {
+            try self.moc.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+
+    }
+    
     func fetchUsers() {
             let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
             var request = URLRequest(url: url)
             request.httpMethod = "GET"
-            
+
             URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data else {
                     print("No data in response: \(error?.localizedDescription ?? "Unknown error").")

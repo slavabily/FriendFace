@@ -27,24 +27,6 @@ struct UserDetailsView: View {
 struct UserDetailsView_Previews: PreviewProvider {
     
     static var users = [User]()
-    
-    static func fetchUsers() {
-           let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
-           var request = URLRequest(url: url)
-           request.httpMethod = "GET"
-           
-           URLSession.shared.dataTask(with: request) { data, response, error in
-               guard let data = data else {
-                   print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                   return
-               }
-               if let decoded = try? JSONDecoder().decode([User].self, from: data) {
-                UserDetailsView_Previews.users = decoded
-               } else {
-                   print("Invalid response from server")
-               }
-           }.resume()
-    }
  
     static var previews: some View {
         UserDetailsView(user: users[0])
