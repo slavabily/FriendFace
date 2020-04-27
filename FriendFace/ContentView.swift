@@ -13,6 +13,8 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(entity: UserCD.entity(), sortDescriptors: []) var userCDs: FetchedResults<UserCD>
     
+//    @FetchRequest(entity: FriendCD.entity(), sortDescriptors: []) var friendCDs: FetchedResults<FriendCD>
+    
     @State private var users = [User]()
         
     var body: some View {
@@ -20,29 +22,22 @@ struct ContentView: View {
             VStack {
                 List {
                     ForEach(userCDs, id: \.self) {userCD in
-                        VStack(alignment: .leading) {
-                            Text(userCD.wrappedName)
-                            Text(userCD.wrappedCompany)
-                        }  
+                        NavigationLink(destination: UserDetailsView(user: userCD)) {
+                            VStack(alignment: .leading) {
+                                Text(userCD.wrappedName)
+                                Text(userCD.wrappedCompany)
+                            }
+                        }
                     }
-                    //                    ForEach(users) {user in
-                    //                        NavigationLink(destination: UserDetailsView(user: user)) {
-                    //                            VStack(alignment: .leading) {
-                    //                                Text(user.name)
-                    //                                    .fontWeight(.bold)
-                    //                                Text(user.company)
-                    //                            }
-                    //                        }
-                    //                     }
                 }
                 .onAppear {
-                   self.fetchUsers()
-                 }
+                    self.fetchUsers()
+                }
                 Button("Save") {
                     self.saveToCD()
                 }
             }
-        .navigationBarTitle("Users")
+            .navigationBarTitle("Users")
         }
     }
     
@@ -51,8 +46,14 @@ struct ContentView: View {
             let userCD = UserCD(context: moc)
             userCD.name = user.name
             userCD.company = user.company
-            
-            print("\(userCD.wrappedName), \(userCD.wrappedCompany)")
+ 
+            for friend in user.friends {
+
+                let userFriendCD = FriendCD(context: moc)
+                userFriendCD.name = friend.name
+ 
+            }
+             print("\(userCD.wrappedName), \(userCD.wrappedCompany)")
         }
         do {
             try self.moc.save()

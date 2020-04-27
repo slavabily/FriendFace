@@ -10,25 +10,42 @@ import SwiftUI
 
 struct UserDetailsView: View {
     
-    let user: User
+    @Environment(\.managedObjectContext) var moc
+//    @FetchRequest(entity: UserCD.entity(), sortDescriptors: []) var userCDs: FetchedResults<UserCD>
+    @FetchRequest(entity: FriendCD.entity(), sortDescriptors: []) var friendCDs: FetchedResults<FriendCD>
     
+    @State private var userFriends = [User.Friend]()
+ 
+    let user: UserCD
+ 
     var body: some View {
-        List {
-            ForEach(user.friends) {friend in
-                NavigationLink(destination: FriendDetailsView(friend: friend)) {
-                    Text(friend.name)
+        VStack {
+            List {
+                ForEach(friendCDs, id: \.self) {friend in
+                    //                NavigationLink(destination: FriendDetailsView(friend: friend)) {
+                    Text(friend.wrappedName)
+                    //                }
                 }
             }
+            .onAppear {
+                self.fetchFriends()
+            }
+            .navigationBarTitle("\(user.wrappedName)'s friends", displayMode: .inline)
         }
-        .navigationBarTitle("\(user.name)'s friends", displayMode: .inline)
+        
     }
+    
+    func fetchFriends() {
+        for friend in friendCDs {
+            print(friend.user?.wrappedName)
+        }
+      }
 }
 
-struct UserDetailsView_Previews: PreviewProvider {
-    
-    static var users = [User]()
- 
-    static var previews: some View {
-        UserDetailsView(user: users[0])
-    }
-}
+//struct UserDetailsView_Previews: PreviewProvider {
+//
+//
+//    static var previews: some View {
+//        UserDetailsView()
+//    }
+//}

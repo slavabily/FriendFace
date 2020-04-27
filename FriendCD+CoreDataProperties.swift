@@ -20,5 +20,13 @@ extension FriendCD {
     @NSManaged public var id: String?
     @NSManaged public var name: String?
     @NSManaged public var user: UserCD?
+    
+    public var wrappedName: String {
+        name ?? "Unknown Friend Name"
+    }
+    
+    public var wrappedID: String {
+        id ?? "Unknown Friend ID"
+    }
 
 }

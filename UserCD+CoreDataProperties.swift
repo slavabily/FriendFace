@@ -23,11 +23,22 @@ extension UserCD {
     @NSManaged public var friends: NSSet?
     
     public var wrappedName: String {
-        name ?? "Unknown Name"
+        name ?? "Unknown User Name"
     }
     
     public var wrappedCompany: String {
-        company ?? "Unknown Company"
+        company ?? "Unknown User Company"
+    }
+    
+    public var wrappedID: String {
+        id ?? "Unknown User ID"
+    }
+    
+    public var friendsArray: [FriendCD] {
+        let set = friends as? Set<FriendCD> ?? []
+        return set.sorted {
+            $0.wrappedName < $1.wrappedName
+        }
     }
 
 }
