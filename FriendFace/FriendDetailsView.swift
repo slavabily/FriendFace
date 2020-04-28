@@ -10,21 +10,20 @@ import SwiftUI
 
 struct FriendDetailsView: View {
     
-    let friend: User.Friend
+    let friend: FriendCD
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("\(friend.name)")
-                .fontWeight(.bold)
-            Text("ID: \(friend.id)")
+            Text("\(friend.wrappedName)")
+                .bold()
+            
+            Text("ID: \(friend.wrappedID)")
         }
-        
     }
 }
 
 struct FriendDetailsView_Previews: PreviewProvider {
-    
-    static let friend = User.Friend(id: "...", name: "John")
+     static let friend = FriendCD()
     
     static var previews: some View {
         FriendDetailsView(friend: friend)

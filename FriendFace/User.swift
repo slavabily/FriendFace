@@ -20,5 +20,7 @@ struct User: Codable, Identifiable {
     var company: String
     var friends: [Friend]
     
+     
+    
 }
 

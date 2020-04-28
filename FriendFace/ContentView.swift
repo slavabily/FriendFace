@@ -13,8 +13,6 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(entity: UserCD.entity(), sortDescriptors: []) var userCDs: FetchedResults<UserCD>
     
-//    @FetchRequest(entity: FriendCD.entity(), sortDescriptors: []) var friendCDs: FetchedResults<FriendCD>
-    
     @State private var users = [User]()
         
     var body: some View {
@@ -25,7 +23,9 @@ struct ContentView: View {
                         NavigationLink(destination: UserDetailsView(user: userCD)) {
                             VStack(alignment: .leading) {
                                 Text(userCD.wrappedName)
+                                    .bold()
                                 Text(userCD.wrappedCompany)
+                                .italic()
                             }
                         }
                     }
@@ -46,21 +46,20 @@ struct ContentView: View {
             let userCD = UserCD(context: moc)
             userCD.name = user.name
             userCD.company = user.company
- 
             for friend in user.friends {
-
-                let userFriendCD = FriendCD(context: moc)
-                userFriendCD.name = friend.name
- 
+                let friendCD = FriendCD(context: moc)
+                friendCD.id = friend.id
+                friendCD.name = friend.name
+                friendCD.user = UserCD(context: moc)
+                friendCD.user?.name = user.name
             }
-             print("\(userCD.wrappedName), \(userCD.wrappedCompany)")
         }
         do {
             try self.moc.save()
         } catch {
             print(error.localizedDescription)
         }
-
+        
     }
     
     func fetchUsers() {
